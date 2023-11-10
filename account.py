@@ -5,13 +5,16 @@
 # - class SavingsAccount, Account with specifics for Savings
 # - class ChequingAccount, Account wiht specifics for Chequing 
 
-
+# definitions for the account type
 ACCOUNT_TYPE_GENERIC = 0
 ACCOUNT_TYPE_CHEQUING = 1
 ACCOUNT_TYPE_SAVING = 2
 
+# definition for the transactions
+TRANSACTION_PROCESSED = True
+TRANSACTION_FAILED = False
 
-# definition of class Account
+# definition of class Account, the base for classes SavingsAccount and ChequingAccount.
 class Account():
 
     def __init__(self) -> None:
@@ -69,19 +72,27 @@ class Account():
         self.__currentBalance += DepositSum
 
     # subtracts the WithdrawSum from the current Balance
+    # reject transactions that have sufficient funds
     def withdraw(self, WithdrawSum):
+        #if  self.__currentBalance >= WithdrawSum:           
         self.__currentBalance -= WithdrawSum
+        return TRANSACTION_PROCESSED
+        #else:
+        #    return TRANSACTION_FAILED
 
 
 
-# definition of the ChequingAccount class
+# definition of the ChequingAccount class. This account allows overdrafts,
+# the account holder can withdraw an amount that is more than their current balance.
 class ChequingAccount(Account):
 
     def __init__(self) -> None:
         self.setAccountType(ACCOUNT_TYPE_CHEQUING)
         pass
     __overdraftLimit: float
+    __overdraftTransactions: int
     __overdraftLimit = 0
+    __overdraftTransactions = 0
 
     def setOverdraftLimit(self, NewOverdraftLimit):
         self.__overdraftLimit = NewOverdraftLimit
@@ -89,11 +100,25 @@ class ChequingAccount(Account):
     def getOverdraftLimit(self):
         return self.__overdraftLimit
 
-    # subtracts the WithdrawSum from the current Balance
+    # override the method withdraw of the base class to reject transactions that cannot be 
+    # completed even after using the overdraft limit. This means if an account has an overdraft
+    # limit of 5000 CAD, the account holder is allowed to withdraw up to 5000 CAD more than the 
+    # money they have in the account.
     def withdraw(self, WithdrawSum):
-        self.__currentBalance -= WithdrawSum
+        balance = self.getCurrentBalance()
+        if ( balance>= WithdrawSum):
+            super(ChequingAccount, self).withdraw(WithdrawSum)
+            return TRANSACTION_PROCESSED
+        elif (balance + self.__overdraftLimit) >= WithdrawSum:
+            super(ChequingAccount, self).withdraw(WithdrawSum)
+            self.__overdraftTransactions += 1
+            return TRANSACTION_PROCESSED
+        else:
+            return TRANSACTION_FAILED
 
-# definition of the SavingAccount class
+
+# definition of the SavingAccount class. This account requires the account holder
+# to maintain a minimum balance in the account.
 class SavingAccount(Account):
 
     def __init__(self) -> None:
@@ -108,9 +133,18 @@ class SavingAccount(Account):
     def getMinimumBalance(self):
         return self.__minimumBalance
 
-    # subtracts the WithdrawSum from the current Balance
-    def withdraw(self, WithdrawSum):
-        self.__currentBalance -= WithdrawSum
+    # override the method withdraw of the base class to reject the transactions that would bring 
+    # the current balance of the account below the minimum balance. E.g., if the minimum balance 
+    # is 5000 CAD and the current balance in the account is 7000 CAD, the maximum withdrawal that
+    # can be allowed is 2000 CAD.
+    def withdraw(self, WithdrawSum):        
+        balance = self.getCurrentBalance()        
+        if balance >= (WithdrawSum + self.__minimumBalance):
+            #self.__currentBalance -= WithdrawSum
+            super(SavingAccount, self).withdraw(WithdrawSum)
+            return TRANSACTION_PROCESSED
+        else:
+            return TRANSACTION_FAILED
 
 
 # print the account information
@@ -144,7 +178,7 @@ if __name__ == "__main__":
     
     # instantiate a generic account and print the defaults
     GenAcc = Account()
-    PrintAccountInfo(GenAcc)
+    #PrintAccountInfo(GenAcc)
 
     # set the attributes of the generic account
     GenAcc.setAccountHolderName("John North")
@@ -155,7 +189,7 @@ if __name__ == "__main__":
 
     # instantiate a saving account and print the defaults
     SaveAcc = SavingAccount()
-    PrintAccountInfo(SaveAcc)
+    #PrintAccountInfo(SaveAcc)
 
     # set the attributes of the saving account
     SaveAcc.setAccountHolderName("Mike South")
@@ -167,7 +201,7 @@ if __name__ == "__main__":
 
    # instantiate a chequing account and print the defaults
     CheqAcc = ChequingAccount()
-    PrintAccountInfo(SaveAcc)
+    #PrintAccountInfo(SaveAcc)
 
     # set the attributes of the chequing account
     CheqAcc.setAccountHolderName("Tom West")
@@ -176,3 +210,40 @@ if __name__ == "__main__":
     CheqAcc.deposit(144.09)
     CheqAcc.setOverdraftLimit(500)
     PrintAccountInfo(CheqAcc)
+
+    # test the overdraft in the ChequingAccount
+    balance_available = 0
+    withdraw_sum  = 50
+    transaction_summary = ""
+    you_have_money = True
+    while you_have_money == True:
+        balance_available = CheqAcc.getCurrentBalance()
+        transaction_summary = "You have " + str(balance_available)
+        you_have_money = CheqAcc.withdraw(withdraw_sum)
+        transaction_summary += " withdraw: " + str(withdraw_sum)
+        if you_have_money == True:
+            transaction_summary += " balance available" + str(CheqAcc.getCurrentBalance())
+        else:
+            transaction_summary += " balance available" + str(CheqAcc.getCurrentBalance())
+            transaction_summary += " insufficient funds!"
+        print(transaction_summary)
+
+    print("Chequing Account: test complete!")
+
+    # test the minimum limit in the SavingAccount
+    you_have_money = True
+    while you_have_money == True:
+        balance_available = SaveAcc.getCurrentBalance()
+        transaction_summary = "You have " + str(balance_available)
+        you_have_money = SaveAcc.withdraw(withdraw_sum)
+        transaction_summary += " withdraw: " + str(withdraw_sum)
+        if you_have_money == True:
+            transaction_summary += " balance available " + str(SaveAcc.getCurrentBalance())
+        else:
+            transaction_summary += " balance available " + str(SaveAcc.getCurrentBalance())
+            transaction_summary += " insufficient funds!"
+        print(transaction_summary)
+
+    print("Saving Account: test complete!")
+
+
