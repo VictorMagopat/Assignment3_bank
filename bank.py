@@ -4,25 +4,6 @@
 
 import account
 
-# predefined Saving accounts
-Saving_TomWest = account.SavingAccount()
-Saving_TomWest.setAccountHolderName("Tom West")
-Saving_JohnNorth = account.SavingAccount()
-Saving_JohnNorth.setAccountHolderName("John North")
-Saving_MikeSouth = account.SavingAccount()
-Saving_MikeSouth.setAccountHolderName("Mike South")
-
-# predefined Chequing accounts
-Chequing_SarahWest = account.ChequingAccount()
-Chequing_SarahWest.setAccountHolderName("Sarah West")
-Chequing_AnneNorth = account.ChequingAccount()
-Chequing_AnneNorth.setAccountHolderName("Anne North")
-Chequing_JaneSouth = account.ChequingAccount()
-Chequing_JaneSouth.setAccountHolderName("Jane South")
-
-ExistingAccounts = [Saving_TomWest, Saving_JohnNorth, Saving_MikeSouth, Chequing_SarahWest, Chequing_AnneNorth, Chequing_JaneSouth]
-
-
 class Bank:
     def __init__(self, existingAccounts = [], lastAccountNumber = 0, bankName = "No Name") -> None:
         
@@ -59,6 +40,24 @@ class Bank:
 
 if __name__ == "__main__":
     print("Testing the bank implementation!")
+    
+    # predefined Saving accounts
+    Saving_TomWest = account.SavingAccount()
+    Saving_TomWest.setAccountHolderName("Tom West")
+    Saving_JohnNorth = account.SavingAccount()
+    Saving_JohnNorth.setAccountHolderName("John North")
+    Saving_MikeSouth = account.SavingAccount()
+    Saving_MikeSouth.setAccountHolderName("Mike South")
+
+    # predefined Chequing accounts
+    Chequing_SarahWest = account.ChequingAccount()
+    Chequing_SarahWest.setAccountHolderName("Sarah West")
+    Chequing_AnneNorth = account.ChequingAccount()
+    Chequing_AnneNorth.setAccountHolderName("Anne North")
+    Chequing_JaneSouth = account.ChequingAccount()
+    Chequing_JaneSouth.setAccountHolderName("Jane South")
+
+    ExistingAccounts = [Saving_TomWest, Saving_JohnNorth, Saving_MikeSouth, Chequing_SarahWest, Chequing_AnneNorth, Chequing_JaneSouth]
 
     # print the list of the test accounts
     listLenght = len(ExistingAccounts) 
