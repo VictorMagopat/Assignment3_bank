@@ -26,12 +26,17 @@ OptionsAccountMenu = """Account menu:
             <3> Withdraw
             <4. Return to main menu"""
 
+
+OptionAccountType = """What account type would like to open:
+            <1> Saving Account  
+            <2> Chequing Account\n"""
+
 class Application:
 
     # initialize the bank database
     famousBank = bank.Bank(bank.ExistingAccounts)
 
-    selectedAcc = famousBank.listExistingAccounts[1]
+    serveAcc = famousBank.listExistingAccounts[1]
 
 
     # Define and call the method run() to show the main menu to the end user.
@@ -57,11 +62,13 @@ class Application:
             menu_start = input("What is your selection: ")
             if menu_start == "1":
                 print("Select account: ")
-                #self.famousBank.searchAccount()
+                #self.famousBank.searchAccount()                
+                #if you found the account go to showAccountMenu
+                #serveAcc = valid account num
                 self.showAccountMenu()
                 break  
             elif menu_start == "2":
-                print("Open account:")
+                print("Opening a new account.")
                 self.showOpenAccountMenu()
                 break
             elif menu_start == "3":
@@ -83,25 +90,32 @@ class Application:
     #    the methods in the account class. 
     # 4. Exit Account: go back to Banking Main Menu
     def showAccountMenu(self):
-        
-        while True:
+        servingAccount = True
+        while servingAccount == True:
             print(OptionsAccountMenu)
             menu_start = input("What is your selection: ")
-            if menu_start == "1":
-                print("You selected check balance: ")
-                #self.famousBank.checkBalanceAccount()
-                break  
+            if menu_start == "1":                
+                balance = self.serveAcc.getCurrentBalance()
+                print("Your account has a balance of: ", str(balance))
+
             elif menu_start == "2":
-                print("You selected deposit")
-                #self.famousBank.deposit()
-                break
+                deposit = 100
+                self.serveAcc.deposit(deposit)
+                print("You deposited: ", str(deposit))
+                balance = self.serveAcc.getCurrentBalance()
+                print("Your account has a new balance of: ", str(balance))
+
             elif menu_start == "3":
-                print("You selected withdraw")
-                #self.famousBank.withdraw()
-                break
+                withdraw = 50
+                print("You withdraw: ", str(withdraw))
+                self.serveAcc.withdraw(withdraw)
+                balance = self.serveAcc.getCurrentBalance()
+                print("Your account has a new balance of: ", str(balance))
+
             elif menu_start == "4":
                 print("You selected return to main menu")
-                break
+                servingAccount = False
+                
             elif menu_start == "q":
                 print(GoodbyeMessage)
                 exit()
@@ -110,13 +124,11 @@ class Application:
         pass
 
     def showOpenAccountMenu(self):
-        print("Open account")
-        accName = input("What name is on the new account?")
+        print("What name is on the new account? ")
+        accName = input("Name: ")
         accType = 0
         while True:
-            accType = input("""You can choose a
-                        <1> Saving Account
-                        <2> Chequing Account""")
+            accType = input(OptionAccountType)
             if accType == "1":
                 self.famousBank.openAccountSaving(accName)
                 print("Congratulation", accName, "! Your Savingng Account is opened!")
@@ -129,11 +141,11 @@ class Application:
                 print(GoodbyeMessage)
                 exit()
             else:
-                print("Please enter: <1> or <2>") 
-        pass
-        self.famousBank.openAccount()
+                print("  Please enter: <1> or <2>") 
         pass
 
 
+
+# instantiate and run the application
 RunApp = Application()
 RunApp.run()
