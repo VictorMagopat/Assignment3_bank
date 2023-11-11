@@ -31,6 +31,9 @@ class Application:
     # initialize the bank database
     famousBank = bank.Bank(bank.ExistingAccounts)
 
+    selectedAcc = famousBank.listExistingAccounts[1]
+
+
     # Define and call the method run() to show the main menu to the end user.
     # Try creating methods to implement functionality for each menu option other than exit.
     def run(self):
@@ -42,10 +45,9 @@ class Application:
         pass
 
 
-	# Define a method showMainMenu that loops to display the following options until  
-    # the user chooses to exit the application:
+	# The showMainMenu method displays the following options until the user chooses to exit:
     # 1. Select Account: this allows the user to enter the account number of the account they
-    #   want to work with. Upon searching the account successfully, the application will call
+    #    want to work with. Upon searching the account successfully, the application will call
     #    the method showAccountMenu to display the Account Menu as described next.
     # 2. Open Account: allows the user to open a new account *To be implemented for Bonus
     # 3. Exit: allows the user to exit the application
@@ -60,6 +62,7 @@ class Application:
                 break  
             elif menu_start == "2":
                 print("Open account:")
+                self.showOpenAccountMenu()
                 break
             elif menu_start == "3":
                 print("Exit")
@@ -72,8 +75,7 @@ class Application:
         pass
 
 
-    # Define a method showAccountMenu that loops to display the following options until
-    # the user chooses to exit the Account Menu:
+    # The showAccountMenu method displays the following options until the user chooses to exit:
     # 1. Check Balance: Display the balance of the selected account
     # 2. Deposit: Prompt the user for an amount to deposit and perform the deposit using the
     #    methods in account class. 
@@ -87,12 +89,15 @@ class Application:
             menu_start = input("What is your selection: ")
             if menu_start == "1":
                 print("You selected check balance: ")
+                #self.famousBank.checkBalanceAccount()
                 break  
             elif menu_start == "2":
                 print("You selected deposit")
+                #self.famousBank.deposit()
                 break
             elif menu_start == "3":
                 print("You selected withdraw")
+                #self.famousBank.withdraw()
                 break
             elif menu_start == "4":
                 print("You selected return to main menu")
@@ -106,15 +111,29 @@ class Application:
 
     def showOpenAccountMenu(self):
         print("Open account")
-        #self.famousBank.openAccount()
-        #while True:
-        #print("Enter your name")
-        #print("Select account type: 1 for chequing 2 for saving")
-
+        accName = input("What name is on the new account?")
+        accType = 0
+        while True:
+            accType = input("""You can choose a
+                        <1> Saving Account
+                        <2> Chequing Account""")
+            if accType == "1":
+                self.famousBank.openAccountSaving(accName)
+                print("Congratulation", accName, "! Your Savingng Account is opened!")
+                break  
+            elif accType == "2":                
+                self.famousBank.openAccountChequing(accName)
+                print("Congratulation", accName, "! Your Chequing Account is opened!")
+                break
+            elif accType == "q":
+                print(GoodbyeMessage)
+                exit()
+            else:
+                print("Please enter: <1> or <2>") 
+        pass
+        self.famousBank.openAccount()
         pass
 
 
 RunApp = Application()
 RunApp.run()
-
-#exit()
