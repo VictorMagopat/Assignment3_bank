@@ -48,12 +48,12 @@ class Bank:
         self.lastAccountNumber = listLenght 
         index = 0
         while index < listLenght:
-            self.listExistingAccounts.append(existingAccounts[index])
+            self.databaseAcc.append(existingAccounts[index])
             index += 1
         pass
 
     # the bank class has a List of Account objects
-    listExistingAccounts = []
+    databaseAcc = []
 
     def getLastAccountNumber(self):
         return self.lastAccountNumber    
@@ -66,7 +66,7 @@ class Bank:
         self.lastAccountNumber += 1
         openNewAcc.setAccountNumber(self.lastAccountNumber)
         
-        self.listExistingAccounts.append(openNewAcc)        
+        self.databaseAcc.append(openNewAcc)        
         pass
 
     # instantiates a checking account and appends it to the list
@@ -77,33 +77,37 @@ class Bank:
         self.lastAccountNumber += 1
         openNewAcc.setAccountNumber(self.lastAccountNumber)
 
-        self.listExistingAccounts.append(openNewAcc)
+        self.databaseAcc.append(openNewAcc)
         pass
     
-    # search database by account number
+    # search database by account number. Returns the index of the account or "-1"
     def searchAccountByNo(self, accNo):
-        # accFound is 1 if successful, 0 if there is no account with this number
-        accFound = 0
+        # accFound is the index of the account or "-1" for not found.
+        accFound = -1
         accIndex = 0
         while accIndex < self.lastAccountNumber:
-            currAcc = self.listExistingAccounts[accIndex].getAccountNumber()
+            currAcc = self.databaseAcc[accIndex].getAccountNumber()
+            print("Search for ", str(accNo), "current number", str(currAcc))
             if accNo == currAcc:
-                accFound = 1
+                accFound = accIndex
                 break
             else:
-                accFound = 0
+                accFound = -1
             accIndex += 1
         return accFound        
 
-    # search database by account
+    # search database by account name. Returns the index of the account or "-1"
     def searchAccountByName(self, accName):        
-        # accFound is 1 if successful, 0 if there is no account with this name
-        accFound = 0
+        # accFound is the index of the account or "-1" for not found.
+        accFound = -1
         accIndex = 0
         while accIndex < self.lastAccountNumber:
-            currName = self.listExistingAccounts[accIndex].getAcountHolderName()
+            currName = self.databaseAcc[accIndex].getAcountHolderName()
             if accName == currName:
-                accFound = 1
+                accFound = accIndex
+                break
+            else:
+                accFound = -1
             accIndex += 1
         return accFound
 
@@ -131,27 +135,27 @@ if __name__ == "__main__":
 
     myIndex = 0
     while myIndex < myBank.lastAccountNumber:
-        account_name = myBank.listExistingAccounts[myIndex].getAcountHolderName()
-        account_no = myBank.listExistingAccounts[myIndex].getAccountNumber()
+        account_name = myBank.databaseAcc[myIndex].getAcountHolderName()
+        account_no = myBank.databaseAcc[myIndex].getAccountNumber()
         print("Account name: ", account_name, "Account number: ", str(account_no))
         myIndex += 1
     print("Finished printing the bank list.")
 
-    searchAccNo = 1
+    searchAccNo = 5
     print("Search by Account Number")
     foundAcc = myBank.searchAccountByNo(searchAccNo)
-    if foundAcc == 1:
-        print("Found account number: ", str(searchAccNo))
-    else:
+    if foundAcc < 0:
         print("The account number", str(searchAccNo), "does't exist")
+    else:
+        print("Found account number: ", str(searchAccNo))        
 
     searchAccName = "Anne North"
     print("Search by Account Name")
     foundAcc = myBank.searchAccountByName(searchAccName)
-    if foundAcc == 1:
-        print("Found account: ", searchAccName)
+    if foundAcc < 0:
+        print("There is no account with the name", searchAccName, ". It does't exist.")
     else:
-        print("This account name", searchAccName, " does't exist")
+        print("Found account: ", searchAccName, "with account number", str(foundAcc))
 
     newAccHolderName = "Nora East"
     print("Create new Chequing Account for: ", newAccHolderName)
@@ -163,8 +167,8 @@ if __name__ == "__main__":
 
     myIndex = 0
     while myIndex < myBank.lastAccountNumber:
-        account_name = myBank.listExistingAccounts[myIndex].getAcountHolderName()
-        account_no = myBank.listExistingAccounts[myIndex].getAccountNumber()
+        account_name = myBank.databaseAcc[myIndex].getAcountHolderName()
+        account_no = myBank.databaseAcc[myIndex].getAccountNumber()
         print("Account name: ", account_name, "Account number: ", str(account_no))
         myIndex += 1
     print("Finished printing the updated bank list.")
