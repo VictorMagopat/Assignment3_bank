@@ -15,16 +15,17 @@ GoodbyeMessage = "Have a nice day.\nGoodbye!"
 
 # this is the main menu 
 OptionsMainMenu = """Bank main menu options:
-            <1> Select Account
-            <2> Open Account
-            <3> Exit"""
+            <1> Select Account by <Number>
+            <2> Select Account by <Name>
+            <3> Open Account
+            <4> Exit"""
 
 # this is the account menu 
 OptionsAccountMenu = """Account menu:
             <1> Check Balance
             <2> Deposit
             <3> Withdraw
-            <4. Return to main menu"""
+            <4> Return to main menu"""
 
 
 OptionAccountType = """What account type would like to open:
@@ -36,8 +37,8 @@ class Application:
     # initialize the bank database
     famousBank = bank.Bank(bank.ExistingAccounts)
 
-    serveAcc = famousBank.listExistingAccounts[1]
-
+    # the account index that is served now
+    serveAccIndex = int(0)    
 
     # Define and call the method run() to show the main menu to the end user.
     # Try creating methods to implement functionality for each menu option other than exit.
@@ -57,28 +58,42 @@ class Application:
     # 2. Open Account: allows the user to open a new account *To be implemented for Bonus
     # 3. Exit: allows the user to exit the application
     def showMainMenu(self):
-        while True:
+        tellerOn = True
+        while tellerOn == True:
             print(OptionsMainMenu)
             menu_start = input("What is your selection: ")
             if menu_start == "1":
-                print("Select account: ")
-                #self.famousBank.searchAccount()                
-                #if you found the account go to showAccountMenu
-                #serveAcc = valid account num
-                self.showAccountMenu()
-                break  
-            elif menu_start == "2":
+                print("Select account by <Number>: ")
+                accInput = input("Please enter the number of the account: \n")            
+                accNo = int(accInput)
+                self.serveAccIndex = self.famousBank.searchAccountByNo(accNo)
+                if self.serveAccIndex < 0:
+                    print("This account doesnt exist")
+                else:
+                    self.showAccountMenu()
+
+            if menu_start == "2":
+                print("Select account by <Name> ")
+                accName = input("Please enter the name of the account: \n")
+                self.serveAccIndex = self.famousBank.searchAccountByName(accName)
+                if self.serveAccIndex < 0:
+                    print("This account doesnt exist")
+                else:
+                    self.showAccountMenu()
+ 
+            elif menu_start == "3":
                 print("Opening a new account.")
                 self.showOpenAccountMenu()
-                break
-            elif menu_start == "3":
+                
+            elif menu_start == "4":
                 print("Exit")
-                break
+                tellerOn = False
+
             elif menu_start == "q":
                 print(GoodbyeMessage)
                 exit()
             else:
-                print("Please enter: <1>, <2> or <3>") 
+                print("Please enter: <1>, <2>, <3> or <4>") 
         pass
 
 
@@ -95,21 +110,21 @@ class Application:
             print(OptionsAccountMenu)
             menu_start = input("What is your selection: ")
             if menu_start == "1":                
-                balance = self.serveAcc.getCurrentBalance()
+                balance = self.famousBank.databaseAcc[self.serveAccIndex].getCurrentBalance()
                 print("Your account has a balance of: ", str(balance))
 
             elif menu_start == "2":
                 deposit = 100
-                self.serveAcc.deposit(deposit)
+                self.famousBank.databaseAcc[self.serveAccIndex].deposit(deposit)
                 print("You deposited: ", str(deposit))
-                balance = self.serveAcc.getCurrentBalance()
+                balance = self.famousBank.databaseAcc[self.serveAccIndex].getCurrentBalance()
                 print("Your account has a new balance of: ", str(balance))
 
             elif menu_start == "3":
                 withdraw = 50
                 print("You withdraw: ", str(withdraw))
-                self.serveAcc.withdraw(withdraw)
-                balance = self.serveAcc.getCurrentBalance()
+                self.famousBank.databaseAcc[self.serveAccIndex].withdraw(withdraw)
+                balance = self.famousBank.databaseAcc[self.serveAccIndex].getCurrentBalance()
                 print("Your account has a new balance of: ", str(balance))
 
             elif menu_start == "4":
@@ -147,5 +162,5 @@ class Application:
 
 
 # instantiate and run the application
-RunApp = Application()
-RunApp.run()
+TellerApp = Application()
+TellerApp.run()
