@@ -173,6 +173,7 @@ def PrintAccountInfo(acc):
         print("        Type: Unknown")
 
 
+# this code is testing the functionality of the account module
 if __name__ == "__main__":
     print("Testing the account implementation!")
     
