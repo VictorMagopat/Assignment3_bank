@@ -4,7 +4,6 @@
 
 import account
 
-print("Testing the bank implementation!")
     
 # predefined Saving accounts
 Acc_01 = account.SavingAccount()
@@ -81,14 +80,15 @@ class Bank:
         pass
     
     # search database by account number. Returns the index of the account or "-1"
-    def searchAccountByNo(self, accNo):
+    def searchAccountByNo(self, accNo, accType):
         # accFound is the index of the account or "-1" for not found.
         accFound = -1
+        currType = 0
         accIndex = 0
         while accIndex < self.lastAccountNumber:
             currAcc = self.databaseAcc[accIndex].getAccountNumber()
-            print("Search for ", str(accNo), "current number", str(currAcc))
-            if accNo == currAcc:
+            currType = self.databaseAcc[accIndex].getAccountType()
+            if (accNo == currAcc) and (accType == currType):
                 accFound = accIndex
                 break
             else:
@@ -97,13 +97,15 @@ class Bank:
         return accFound        
 
     # search database by account name. Returns the index of the account or "-1"
-    def searchAccountByName(self, accName):        
+    def searchAccountByName(self, accName, accType):        
         # accFound is the index of the account or "-1" for not found.
         accFound = -1
+        currType = 0 
         accIndex = 0
         while accIndex < self.lastAccountNumber:
             currName = self.databaseAcc[accIndex].getAcountHolderName()
-            if accName == currName:
+            currType = self.databaseAcc[accIndex].getAccountType()
+            if (accName == currName) and (accType == currType):
                 accFound = accIndex
                 break
             else:
@@ -114,6 +116,9 @@ class Bank:
 
 # this code is testing the functionality of the bank module
 if __name__ == "__main__":
+
+    print("Testing the bank implementation!")
+
     # print the list of the test accounts
     listLenght = len(ExistingAccounts) 
     print("There are :", str(listLenght), "accounts in the test list.")
@@ -121,7 +126,7 @@ if __name__ == "__main__":
     myIndex = 0
     while myIndex < listLenght:
         account_name = ExistingAccounts[myIndex].getAcountHolderName()
-        print("Account name", account_name)
+        print("Account name: ", account_name, "type:", ExistingAccounts[myIndex].getAccountType())
         myIndex += 1
     print("Finished printing the test list.")
 
@@ -137,25 +142,39 @@ if __name__ == "__main__":
     while myIndex < myBank.lastAccountNumber:
         account_name = myBank.databaseAcc[myIndex].getAcountHolderName()
         account_no = myBank.databaseAcc[myIndex].getAccountNumber()
-        print("Account name: ", account_name, "Account number: ", str(account_no))
+        account_type = myBank.databaseAcc[myIndex].getAccountType()
+        print("Account name: ", account_name, "Account number: ", str(account_no), " type: ", str(account_type))
         myIndex += 1
     print("Finished printing the bank list.")
 
     searchAccNo = 5
     print("Search by Account Number")
-    foundAcc = myBank.searchAccountByNo(searchAccNo)
+    foundAcc = myBank.searchAccountByNo(searchAccNo, account.ACC_TYPE_SAVING)
     if foundAcc < 0:
-        print("The account number", str(searchAccNo), "does't exist")
+        print("The Saving account number", str(searchAccNo), "does't exist")
     else:
-        print("Found account number: ", str(searchAccNo))        
+        print("Found Saving account number: ", str(searchAccNo))    
+
+    foundAcc = myBank.searchAccountByNo(searchAccNo, account.ACC_TYPE_CHEQUING)
+    if foundAcc < 0:
+        print("The Chequing account number", str(searchAccNo), "does't exist")
+    else:
+        print("Found Chequing account number: ", str(searchAccNo))      
 
     searchAccName = "Anne North"
     print("Search by Account Name")
-    foundAcc = myBank.searchAccountByName(searchAccName)
+    foundAcc = myBank.searchAccountByName(searchAccName, account.ACC_TYPE_SAVING)
     if foundAcc < 0:
-        print("There is no account with the name", searchAccName, ". It does't exist.")
+        print("There is no Saving account with the name", searchAccName, ". It does't exist.")
     else:
-        print("Found account: ", searchAccName, "with account number", str(foundAcc))
+        print("Found Saving account: ", searchAccName, "with account number", str(foundAcc))
+
+    print("Search by Account Name")
+    foundAcc = myBank.searchAccountByName(searchAccName, account.ACC_TYPE_CHEQUING)
+    if foundAcc < 0:
+        print("There is no Chequing account with the name", searchAccName, ". It does't exist.")
+    else:
+        print("Found Chequing account: ", searchAccName, "with account number", str(foundAcc))
 
     newAccHolderName = "Nora East"
     print("Create new Chequing Account for: ", newAccHolderName)
