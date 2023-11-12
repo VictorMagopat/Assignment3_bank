@@ -6,9 +6,9 @@
 # - class ChequingAccount, Account wiht specifics for Chequing 
 
 # definitions for the account type
-ACCOUNT_TYPE_GENERIC = 0
-ACCOUNT_TYPE_CHEQUING = 1
-ACCOUNT_TYPE_SAVING = 2
+ACC_TYPE_GENERIC = 0
+ACC_TYPE_CHEQUING = 1
+ACC_TYPE_SAVING = 2
 
 # definition for the transactions
 TRANSACTION_PROCESSED = True
@@ -25,7 +25,7 @@ class Account():
     __rateOfInterest: float
     __currentBalance: float
 
-    __accountType = ACCOUNT_TYPE_GENERIC
+    __accountType = ACC_TYPE_GENERIC
     __accountNumber = 999999999
     __accountHolderName = "NOT DEFINED"
     __rateOfInterest = 0
@@ -63,7 +63,7 @@ class Account():
     def setRateOfInterest(self, NewRateOfInterest):
         self.__rateOfInterest = NewRateOfInterest
     
-    # returns the type of the account
+    # sets the type of the account
     def setAccountType(self, NewAccountType) :
         self.__accountType = NewAccountType
 
@@ -87,11 +87,14 @@ class Account():
 class ChequingAccount(Account):
 
     def __init__(self) -> None:
-        self.setAccountType(ACCOUNT_TYPE_CHEQUING)
+        self.setAccountType(ACC_TYPE_CHEQUING)
         pass
+
+    #__accountType = ACC_TYPE_CHEQUING
+        
     __overdraftLimit: float
     __overdraftTransactions: int
-    __overdraftLimit = 0
+    __overdraftLimit = 500
     __overdraftTransactions = 0
 
     def setOverdraftLimit(self, NewOverdraftLimit):
@@ -122,10 +125,10 @@ class ChequingAccount(Account):
 class SavingAccount(Account):
 
     def __init__(self) -> None:
-        self.setAccountType(ACCOUNT_TYPE_SAVING)
+        self.setAccountType(ACC_TYPE_SAVING)
         pass
     __minimumBalance: float
-    __minimumBalance = 0
+    __minimumBalance = 1000
 
     def setMinimumBalance(self, NewMinBalance):
         self.__minimumBalance = NewMinBalance
@@ -147,35 +150,34 @@ class SavingAccount(Account):
             return TRANSACTION_FAILED
 
 
-# print the account information
-def PrintAccountInfo(acc):
-    accNo = acc.getAccountNumber()
-    accName = acc.getAcountHolderName()
-    accRate = acc.getRateOfInterest()
-    accBal = acc.getCurrentBalance()
-    accType = acc.getAccountType()
-    print("Account information:")
-    print("        Name: ", accName)
-    print("        Number: ", str(accNo))
-    print("        Balance: ", str(accBal))
-    print("        Interest Rate: ", str(accRate))
-    if ACCOUNT_TYPE_GENERIC == accType:
-        print("        Type: Generic")
-    elif ACCOUNT_TYPE_CHEQUING == accType:
-        print("        Type: Chequing Account")
-        overDraft = acc.getOverdraftLimit()
-        print("        Overdraft Limit: ", str(overDraft))
-    elif ACCOUNT_TYPE_SAVING == accType:
-        print("        Type: Saving Account")
-        minBal = acc.getMinimumBalance()
-        print("        Minimum Balance: ", str(minBal))
-    else:
-        print("        Type: Unknown")
-
-
 # this code is testing the functionality of the account module
 if __name__ == "__main__":
     print("Testing the account implementation!")
+
+    # print the account information
+    def PrintAccountInfo(acc):
+        accNo = acc.getAccountNumber()
+        accName = acc.getAcountHolderName()
+        accRate = acc.getRateOfInterest()
+        accBal = acc.getCurrentBalance()
+        accType = acc.getAccountType()
+        print("Account information:")
+        print("        Name: ", accName)
+        print("        Number: ", str(accNo))
+        print("        Balance: ", str(accBal))
+        print("        Interest Rate: ", str(accRate))
+        if ACC_TYPE_GENERIC == accType:
+            print("        Type: Generic")
+        elif ACC_TYPE_CHEQUING == accType:
+            print("        Type: Chequing Account")
+            overDraft = acc.getOverdraftLimit()
+            print("        Overdraft Limit: ", str(overDraft))
+        elif ACC_TYPE_SAVING == accType:
+            print("        Type: Saving Account")
+            minBal = acc.getMinimumBalance()
+            print("        Minimum Balance: ", str(minBal))
+        else:
+            print("        Type: Unknown")
     
     # instantiate a generic account and print the defaults
     GenAcc = Account()
