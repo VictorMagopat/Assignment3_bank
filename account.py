@@ -1,4 +1,4 @@
-# This is the account.py file. Create 2023.11.08
+# This is the account.py file. Created 2023.11.08
 # Author: Victor Magopat
 # This file contains the definition for:
 # - class Account, generic account 

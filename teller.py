@@ -1,4 +1,4 @@
-# This is the teller.py file. Create 2023.11.08
+# This is the teller.py file. Created 2023.11.08
 # Author: Victor Magopat
 # This file contains the definition for the class Application.
 # Implements all the interaction between the user and the Bank. 
@@ -26,18 +26,22 @@ AccountSearchMenu = """Search options:
             <2> Search Account by <Name>
             <3> Return to main menu"""
 
-# this is the account menu 
+# This is the account menu 
 AccountOperationsMenu = """Account menu:
             <1> Check Balance
             <2> Deposit
             <3> Withdraw
             <4> Return to main menu"""
 
-
+# Account type menu
 AccountTypeMenu = """What account type would like to open:
             <1> Saving Account  
             <2> Chequing Account\n"""
 
+
+# This is the Application class. This class is what the user interacts with to access the bank
+# and the accounts attached to thier bank. This class holds all menus calls all methods from the
+# bank class.
 class Application:
 
     # initialize the bank database
@@ -85,22 +89,28 @@ class Application:
 
                     # search account by number
                     if menu_start == "1":
-                        print("Select account by <Number>: ")
-                        accInput = input("Please enter the number of the account: \n")            
-                        accNo = int(accInput)
-                        print("Searching for Chequing account number: ", str(accNo))
-                        self.serveAccIndex = self.famousBank.searchAccountByNo(accNo, accType)
-                        if self.serveAccIndex < 0:
-                            print("This account doesnt exist")
-                        else:
-                            self.showAccountMenu()
+                        while True:
+                            print("Select account by <Number>: ")
+                            accInput = input("Please enter the number of the account: \n")
+                            validInput = accInput.isnumeric()
+                            if validInput == True:
+                                accNo = int(accInput)
+                                print("Searching for account number: ", str(accNo))
+                                self.serveAccIndex = self.famousBank.searchAccountByNo(accNo, accType)
+                                if self.serveAccIndex < 0:
+                                    print("This account doesnt exist")
+                                    break
+                                else:
+                                    self.showAccountMenu()
+                            else: print("please input a valid number")
+
                     
                     # search account by name
                     elif menu_start == "2":
                         print("Select account by <Name> ")
                         accName = input("Please enter the name of the account: \n")
                         self.serveAccIndex = self.famousBank.searchAccountByName(accName, accType)
-                        print("Searching for Chequing account name: ", accName)
+                        print("Searching for account name: ", accName)
                         if self.serveAccIndex < 0:
                             print("This account doesnt exist")
                         else:
